@@ -1,51 +1,78 @@
+import { StyleSheet, Text, View } from 'react-native';
+import { TextInput, Button} from 'react-native-paper';
 
-import { StyleSheet, Text, View,Button} from 'react-native';
-import { Contacts } from './screens/Contacts';
-
-import { NavigationContainer } from '@react-navigation/native';
+// Importar componentes para la navegación y generación de la pila de screens
+import { NavigationContainer } from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { MaterialIcons} from '@expo/vector-icons'
+import Contacts from './screens/Contacts';
+// Crear constante para generar las rutas de los screens
 
-// crear constante para generar rutas de los screen 
+let users = [
+  {username:'hruiz',name:'Humberto Ruiz',password:'11', role:1},
+  {username:'jdoe',name:'John Doe',password:'22', role:2}
+]
+
 const Stack = createNativeStackNavigator();
+const Tab = createBottomTabNavigator();
+
 export default function App() {
   return (
-   <NavigationContainer>
-    <Stack.Navigator
-    initialRouteName='home'>
+    <NavigationContainer>
+      <Stack.Navigator
+        initialRouteName='HomeTabs'
+      >
+        <Stack.Screen name="HomeTabs" component={HomeTabs} options={{title:'Sistema Prueba'}}/>
+      </Stack.Navigator>
+    </NavigationContainer>
+  );
+}
+
+function HomeScreen({navigation}){
+  return(
+    <View style={styles.container}>
+      <Text style={{marginBottom:20}}>Inicio de Sesión</Text>
       
-      <Stack.Screen name="Products" component={ProductScreen} options={{title:'productos'}} ></Stack.Screen>
-      <Stack.Screen name="Home" component={HomeScreen} options={{title:'inicio'}} ></Stack.Screen>
-      <Stack.Screen name="Contacts" component={Contacts} options={{title:'contacto'}}></Stack.Screen>
-    </Stack.Navigator>
-   </NavigationContainer>
-  );
-}
-function HomeScreen({navigation}) {
-  
-  return(
-
-    <View style={styles.container}>
-      <Text style={{marginBottom:20}}>Estamos en inicio</Text>
-      <Button title='Ir a productos' onPress={()=>{
-        navigation.navigate('Products')
-      }}></Button>
-
     </View>
   );
 }
-function ProductScreen({navigation}) {
-  let title='Este es el titulo'
-  let name='jessica'
+
+function ProductsScreen({navigation}){
+  let title = "Este es el titulo"
+  let fullname = "Pepito Perez"
   return(
     <View style={styles.container}>
-      <Text>Estamos en Productos</Text>
-      <Button
-      title='Contactenos'
-      onPress={()=>navigation.navigate('Contacts',{title:title,name:name})}></Button>
-
+      <Text style={{marginBottom:10}}>Estamos en Productos</Text>
     </View>
   );
 }
+
+function HomeTabs(){
+  return(
+    <Tab.Navigator
+      screenOptions={{
+        headerShown:false,
+        tabBarActiveTintColor:'red',
+        tabBarInactiveTintColor:'gray',
+        tabBarActiveBackgroundColor:'orange',
+        tabBarInactiveBackgroundColor:'powderblue'
+      }}
+    >
+      <Tab.Screen name="Home" component={HomeScreen} options={{
+        tabBarStyle:{display:'none'},
+        tabBarIcon: (tabInfo) => (<MaterialIcons name="home" size={22}/>)
+      }}/>
+      <Tab.Screen name="Products" component={ProductsScreen} options={{
+        tabBarIcon: (tabInfo) => (<MaterialIcons name="apps" size={22}/>)
+      }}/>
+      <Tab.Screen name="Contacts" component={Contacts} options={{
+        tabBarIcon: (tabInfo) => (<MaterialIcons name="chat" size={22}/>)
+      }}/>
+    </Tab.Navigator>
+  );
+}
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
